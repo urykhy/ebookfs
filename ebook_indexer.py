@@ -76,7 +76,10 @@ def run(path):
             fileList.append(os.path.join(root,file))
     for f in fileList:
         if f.endswith(".fb2") or f.endswith(".fb2.zip"):
-            process_file(os.path.join(path,f))
+            try:
+                process_file(os.path.join(path,f))
+            except Exception as e:
+                print e
 
 if __name__ == '__main__':
     run(sys.argv[1])
