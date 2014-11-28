@@ -28,7 +28,6 @@ def process_file(f):
         print "unzipping ...",f
         tmp = zipfile.ZipFile(f, 'r')
         nl = tmp.namelist()
-        print "namelist",nl
         tmp = tmp.read(nl[0])
         tree = ET.fromstring(tmp)
     for i in tree.find(ns + "description/" + ns + "title-info"):
