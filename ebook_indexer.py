@@ -23,9 +23,13 @@ def process_file(f):
     sequence=""
     if f.endswith(".fb2"):
         ext = ".fb2"
+        title=os.path.basename(f)[:-4].decode("utf-8")
+        print "tmp title",title
         tree = ET.parse(f)
     else:
         ext = ".fb2.zip"
+        title=os.path.basename(f)[:-8].decode("utf-8")
+        print "tmp title",title
         print "unzipping ...",f
         tmp = zipfile.ZipFile(f, 'r')
         nl = tmp.namelist()
@@ -33,21 +37,20 @@ def process_file(f):
         tree = ET.fromstring(tmp)
     for i in tree.find(ns + "description/" + ns + "title-info"):
         if i.tag == ns + "genre":
-            genre.append(i.text)
-        if i.tag == ns + "book-title":
-            title = i.text
+            # remove multiple spaces
+            genre.append(' '.join(i.text.split()))
+        if i.tag == ns + "book-title" and i.text is not None:
+            title = ' '.join(i.text.split())
         if i.tag == ns + "author":
             a = []
             for an in i:
                 if "name" in an.tag and an.text is not None:
-                    a.append(an.text)
+                    a.append(' '.join(an.text.split()))
             if len(a):
                 author.append(" ".join(a))
         if i.tag == ns + "sequence":
-            sequence = i.get("name")
-
-
-    print title," ", ";".join(genre), ";".join(author)
+            sequence = ' '.join(i.get("name").split())
+    print title
     s = session()
     book_entry = get_or_create(session = s, model = Books, title = title, ext = ext.decode("utf-8"), path = f.decode("utf-8"))
     author_code = 1
