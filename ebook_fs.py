@@ -45,7 +45,7 @@ class EbookFS(Fuse):
                 self.tree[name + "/" + d_name] = [p_dir]
                 self.tree[name + "/" + d_name + "/" + f_name] = [p_file, book.path.encode("utf-8")]
         for i in self.tree.keys():
-            print "added",i
+            print i
 
     # Helpers
     # =======
@@ -84,12 +84,12 @@ class EbookFS(Fuse):
         dirents = ['.', '..']
         if path[-1] != "/":
             path += "/"
-        print "start with [" + path + "]"
+        print "read dir " + path
         elem_n = path.count("/")
         for i in self.tree.keys():
             if i != path and i.startswith(path) and i.count("/") == elem_n:
                 i = i[len(path):]
-                print "add entry",i
+                print " * add ",i
                 dirents.append(i)
         for r in dirents:
             yield fuse.Direntry(r)
