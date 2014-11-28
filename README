@@ -2,7 +2,7 @@ ebookfs
 =======
 filesystem to arrange fb2 books
 support fb2 and fb2.zip files
-arrange by author/genre
+arrange by author/genre/sequence
 
 require
 =======
