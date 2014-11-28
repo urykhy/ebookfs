@@ -13,5 +13,13 @@ cp empty.db library.sqllite
 ./ebook_indexer.py <path to books>
 python ebook_fs.py -f /mnt/books
 
+require
+=======
+sqlalchemy
+
+TODO
+====
+avoid self.tree in ebook_fs.py
+
 
 

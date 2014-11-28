@@ -4,22 +4,7 @@
 
 import os, sys, zipfile
 import xml.etree.ElementTree as ET
-
-from sqlalchemy import *
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-_db = create_engine('sqlite:///library.sqllite', echo=False)
-_session = sessionmaker(bind=_db)
-_metadata = MetaData(bind=_db)
-_Base = declarative_base()
-class Books(_Base):
-    __table__ = Table('books', _metadata, autoload=True)
-class Desc(_Base):
-    __table__ = Table('desc', _metadata, autoload=True)
-class Data(_Base):
-    __table__ = Table('data', _metadata, autoload=True)
-class Meta(_Base):
-    __table__ = Table('meta', _metadata, autoload=True)
+from models import *
 
 def get_or_create(session, model, **kwargs):
     object = session.query(model).filter_by(**kwargs).first()
@@ -59,7 +44,7 @@ def process_file(f):
             if len(a):
                 author.append(" ".join(a))
     print title," ", ";".join(genre), ";".join(author)
-    s = _session()
+    s = session()
     book_entry = get_or_create(session = s, model = Books, title = title, ext = ext.decode("utf-8"), path = f.decode("utf-8"))
     author_code = 1
     genre_code = 2

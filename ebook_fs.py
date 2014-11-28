@@ -2,8 +2,6 @@
 # vim:ts=4:sts=4:sw=4:et
 # -*- coding: utf-8 -*-
 
-# sudo python ebook_fs.py -f /mnt/m1
-
 from __future__ import with_statement
 
 import os
@@ -14,21 +12,7 @@ from fuse import Fuse
 import fuse
 fuse.fuse_python_api = (0, 2)
 
-from sqlalchemy import *
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-_db = create_engine('sqlite:///library.sqllite', echo=False)
-_session = sessionmaker(bind=_db)
-_metadata = MetaData(bind=_db)
-_Base = declarative_base()
-class Books(_Base):
-    __table__ = Table('books', _metadata, autoload=True)
-class Desc(_Base):
-    __table__ = Table('desc', _metadata, autoload=True)
-class Data(_Base):
-    __table__ = Table('data', _metadata, autoload=True)
-class Meta(_Base):
-    __table__ = Table('meta', _metadata, autoload=True)
+from models import *
 
 class MyStat(fuse.Stat):
     def __init__(self):
@@ -46,7 +30,7 @@ class MyStat(fuse.Stat):
 class EbookFS(Fuse):
     def __init__(self, **kwargs):
         super(EbookFS, self).__init__(**kwargs)
-        s = _session()
+        s = session()
         self.tree = dict()
         p_dir = stat.S_IFDIR | 0755
         p_file = stat.S_IFREG | 0644
