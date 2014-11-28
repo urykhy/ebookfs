@@ -16,7 +16,6 @@ def get_or_create(session, model, **kwargs):
 
 def process_file(f):
     ns = "{http://www.gribuser.ru/xml/fictionbook/2.0}"
-    print f
     genre=[]
     author=[]
     title=""
@@ -24,13 +23,10 @@ def process_file(f):
     if f.endswith(".fb2"):
         ext = ".fb2"
         title=os.path.basename(f)[:-4].decode("utf-8")
-        print "tmp title",title
         tree = ET.parse(f)
     else:
         ext = ".fb2.zip"
         title=os.path.basename(f)[:-8].decode("utf-8")
-        print "tmp title",title
-        print "unzipping ...",f
         tmp = zipfile.ZipFile(f, 'r')
         nl = tmp.namelist()
         tmp = tmp.read(nl[0])
@@ -50,7 +46,6 @@ def process_file(f):
                 author.append(" ".join(a))
         if i.tag == ns + "sequence":
             sequence = ' '.join(i.get("name").split())
-    print title
     s = session()
     book_entry = get_or_create(session = s, model = Books, title = title, ext = ext.decode("utf-8"), path = f.decode("utf-8"))
     author_code = 1
@@ -77,9 +72,10 @@ def run(path):
     for f in fileList:
         if f.endswith(".fb2") or f.endswith(".fb2.zip"):
             try:
+                print f
                 process_file(os.path.join(path,f))
             except Exception as e:
-                print e
+                print "Exception: ",e
 
 if __name__ == '__main__':
     run(sys.argv[1])
