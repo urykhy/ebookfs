@@ -20,6 +20,7 @@ def process_file(f):
     genre=[]
     author=[]
     title=""
+    sequence=""
     if f.endswith(".fb2"):
         ext = ".fb2"
         tree = ET.parse(f)
@@ -42,17 +43,25 @@ def process_file(f):
                     a.append(an.text)
             if len(a):
                 author.append(" ".join(a))
+        if i.tag == ns + "sequence":
+            sequence = i.get("name")
+
+
     print title," ", ";".join(genre), ";".join(author)
     s = session()
     book_entry = get_or_create(session = s, model = Books, title = title, ext = ext.decode("utf-8"), path = f.decode("utf-8"))
     author_code = 1
     genre_code = 2
+    seq_code = 3
     for i in genre:
         genre_entry = get_or_create(session = s, model = Data, data = i)
         meta_link = get_or_create(session = s, model = Meta, book_id = book_entry.id, desc_id = genre_code, data_id = genre_entry.id)
     for i in author:
         author_entry = get_or_create(session = s, model = Data, data = i)
         meta_link = get_or_create(session = s, model = Meta, book_id = book_entry.id, desc_id = author_code, data_id = author_entry.id)
+    if len(sequence):
+        seq_entry = get_or_create(session = s, model = Data, data = sequence)
+        meta_link = get_or_create(session = s, model = Meta, book_id = book_entry.id, desc_id = seq_code, data_id = seq_entry.id)
     s.commit()
 
 
