@@ -67,7 +67,11 @@ def process_file(f):
 
 def run(path):
     print "Running with",path
-    for f in os.listdir(path):
+    fileList=[]
+    for root, subFolders, files in os.walk(path):
+        for file in files:
+            fileList.append(os.path.join(root,file))
+    for f in fileList:
         if f.endswith(".fb2") or f.endswith(".fb2.zip"):
             process_file(os.path.join(path,f))
 
